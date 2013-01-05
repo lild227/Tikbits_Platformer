@@ -1,0 +1,21 @@
+{
+name: "Map 1",
+diCount: 2,
+di: [
+	{
+		command: Image,
+		relative: true,
+		resource: data/img/maps/bg.png
+	},
+	{
+		command: Image,
+		resource: data/img/maps/grass.png,
+        repeatX: true,
+		bounds: {
+			width: 4,
+			height: 2,
+			y: -1.5
+		}
+	}
+]
+}
