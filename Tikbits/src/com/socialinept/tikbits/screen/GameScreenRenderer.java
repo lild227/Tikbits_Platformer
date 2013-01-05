@@ -63,9 +63,9 @@ public class GameScreenRenderer {
         this.cam = new OrthographicCamera(blockX, blockY);
         this.cam.position.set(8, 3, 0);
         texturePool = new TexturePool();
-        texturePool.getTexture("data/img/sprites/tikbit.png");
-        texturePool.getTexture("data/img/maps/grass.png");
-        texturePool.getTexture("data/img/maps/bg.png");
+        texturePool.getTexture("img/sprites/tikbit.png");
+        texturePool.getTexture("img/maps/grass.png");
+        texturePool.getTexture("img/maps/bg.png");
         //this.cache = new SpriteCache(this.map.tiles.length * this.map.tiles[0].length, false);
         //this.blocks = new int[(int)Math.ceil(this.map.tiles.length / 24.0f)][(int)Math.ceil(this.map.tiles[0].length / 16.0f)];
         //createAnimations();
@@ -94,8 +94,8 @@ public class GameScreenRenderer {
 //	}
 //
 //	private void createAnimations () {
-//		this.tile = new TextureRegion(new Texture(Gdx.files.internal("data/tile.png")), 0, 0, 20, 20);
-//		Texture bobTexture = new Texture(Gdx.files.internal("data/bob.png"));
+//		this.tile = new TextureRegion(new Texture(Gdx.files.internal("tile.png")), 0, 0, 20, 20);
+//		Texture bobTexture = new Texture(Gdx.files.internal("bob.png"));
 //		TextureRegion[] split = new TextureRegion(bobTexture).split(20, 20)[0];
 //		TextureRegion[] mirror = new TextureRegion(bobTexture).split(20, 20)[0];
 //		for (TextureRegion region : mirror)

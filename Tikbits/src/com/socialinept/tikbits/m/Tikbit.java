@@ -21,7 +21,7 @@ public class Tikbit extends PhysicalObject{
        di = new DrawingInstruction[1];
         DrawingInstruction dit = new DrawingInstruction();
         dit.command = DrawCommand.Image;
-        dit.resource = "data/img/sprites/tikbit.png";
+        dit.resource = "img/sprites/tikbit.png";
         di[0] = dit;
     }
 

@@ -33,7 +33,7 @@ public class GameProcessor {
         drawables = new Array<IDrawable>();
         physicalObjects.add(player.physicalObject);
         updatables.add(player.physicalObject);
-        map = Map.readMap("data/maps/1/json");
+        map = Map.readMap("maps/1/json");
         //map = new Map();
         drawables.add(map);
         drawables.add(player.physicalObject);

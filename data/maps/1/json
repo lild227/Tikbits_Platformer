@@ -5,11 +5,11 @@ di: [
 	{
 		command: Image,
 		relative: true,
-		resource: data/img/maps/bg.png
+		resource: img/maps/bg.png
 	},
 	{
 		command: Image,
-		resource: data/img/maps/grass.png,
+		resource: img/maps/grass.png,
         repeatX: true,
 		bounds: {
 			width: 4,
