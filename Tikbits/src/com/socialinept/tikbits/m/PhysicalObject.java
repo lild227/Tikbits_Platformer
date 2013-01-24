@@ -5,15 +5,16 @@
 package com.socialinept.tikbits.m;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
 
 /**
  *
  * @author Andrew McCall <andrewnmccall@gmail.com>
  */
-public abstract class PhysicalObject implements IUpdatable, IDrawable {
+public class PhysicalObject implements IUpdatable, IDrawable {
 
     static int IDLE = 0;
     static int RUN = 1;
@@ -37,20 +38,35 @@ public abstract class PhysicalObject implements IUpdatable, IDrawable {
     int state = SPAWN;
     float stateTime = 0;
     int dir = LEFT;
+    int diCount = 0;
+    DrawingInstruction[] di;
     boolean grounded = false;
-
+    
+    public PhysicalObject(){
+        
+    }
+    
+    /**
+     *
+     * @param deltaTime
+     */
+    @Override
     public void update(float deltaTime) {
         accel.y = -GRAVITY;
         accel.mul(deltaTime);
         vel.add(accel.x, accel.y);
-        if (accel.x == 0)
+        if (accel.x == 0) {
             vel.x *= DAMP;
-        if (vel.x > MAX_VEL)
+        }
+        if (vel.x > MAX_VEL) {
             vel.x = MAX_VEL;
-        if (vel.x < -MAX_VEL)
+        }
+        if (vel.x < -MAX_VEL) {
             vel.x = -MAX_VEL;
-        if(pos.y <= 0 && vel.y < 0)
+        }
+        if (pos.y <= 0 && vel.y < 0) {
             vel.y = 0;
+        }
         vel.mul(deltaTime);
         tryMove();
         vel.mul(1.0f / deltaTime);
@@ -70,37 +86,67 @@ public abstract class PhysicalObject implements IUpdatable, IDrawable {
         stateTime += deltaTime;
     }
 
+    @Override
+    public int getDrawingInstructionsCount() {
+        return diCount;
+    }
+
+    @Override
+    public DrawingInstruction[] getDrawingInstructions() {
+        return di;
+    }
+
     private void tryMove() {
         bounds.x += vel.x;
         bounds.y += vel.y;
-//		fetchCollidableRects();
-//		for (int i = 0; i < r.length; i++) {
-//			Rectangle rect = r[i];
-//			if (bounds.overlaps(rect)) {
-//				if (vel.x < 0)
-//					bounds.x = rect.x + rect.width + 0.01f;
-//				else
-//					bounds.x = rect.x - bounds.width - 0.01f;
-//				vel.x = 0;
-//			}
-//		}
-//
-//		bounds.y += vel.y;
-//		fetchCollidableRects();
-//		for (int i = 0; i < r.length; i++) {
-//			Rectangle rect = r[i];
-//			if (bounds.overlaps(rect)) {
-//				if (vel.y < 0) {
-//					bounds.y = rect.y + rect.height + 0.01f;
-//					grounded = true;
-//					if (state != DYING && state != SPAWN) state = Math.abs(accel.x) > 0.1f ? RUN : IDLE;
-//				} else
-//					bounds.y = rect.y - bounds.height - 0.01f;
-//				vel.y = 0;
-//			}
-//		}
-
         pos.x = bounds.x - 0.2f;
         pos.y = Math.max(0, bounds.y);
+    }
+
+    public static PhysicalObject readPhysicalObject(String loc) {
+        FileHandle handle = Gdx.files.internal(loc);
+        Json json = new Json();
+        PhysicalObject out;
+        out = json.fromJson(PhysicalObject.class, handle);
+        out.postJSON();
+        return out;
+    }
+    public void postJSON() {
+        updatePhysicalObjectDrawingInstructions();
+    }
+    public void updatePhysicalObjectDrawingInstructions(){
+        for(int i = 0; i < di.length; i++) {
+            if(di[i] != null && di[i] instanceof PhysicalObjectDrawingInstruction) {
+                ((PhysicalObjectDrawingInstruction)di[i]).setPhysicalObject(this);
+            }
+        }
+    }
+    public static void main(String[] args){
+        PhysicalObject po = new PhysicalObject();
+        po.di = new DrawingInstruction[1];
+        Json json = new Json();
+        //po.di[0] = new PhysicalObjectDrawingInstruction(po);
+        String s = json.prettyPrint(po);
+        System.out.println(s);        
+    }
+}
+
+class PhysicalObjectDrawingInstruction extends DrawingInstruction {
+
+    PhysicalObject po;
+
+    public PhysicalObjectDrawingInstruction() {
+    }
+
+    public void setPhysicalObject(PhysicalObject po) {
+        this.po = po;
+    }
+    
+    @Override
+    public void update() {
+        bounds.x = po.bounds.x;
+        bounds.y = po.bounds.y;
+        bounds.width = 1;
+        bounds.height = 1;
     }
 }

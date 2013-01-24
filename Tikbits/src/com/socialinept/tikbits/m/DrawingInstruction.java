@@ -23,6 +23,9 @@ public class DrawingInstruction {
 
     public DrawingInstruction() {
     }
+    public void update(){
+        
+    }
 }
 
 class DrawingInstructionComparator implements Comparator<DrawingInstruction> {

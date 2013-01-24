@@ -154,6 +154,7 @@ public class GameScreenRenderer {
         batch.begin();
         DrawingInstruction[] di = gp.getDrawingInstructions();
         for (int i = 0; i < di.length; i++) {
+            di[i].update();
             switch (di[i].command) {
                 case Line:
                     renderer.color(di[i].fcolor_R, di[i].fcolor_G, di[i].fcolor_B, di[i].fcolor_A);
