@@ -6,8 +6,10 @@ package com.socialinept.tikbits.m;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import java.util.ArrayList;
+import com.badlogic.gdx.utils.OrderedMap;
 
 /**
  *
@@ -15,43 +17,37 @@ import java.util.ArrayList;
  */
 public class Map implements IUpdatable, IDrawable {
 
-    DrawingInstruction[] di;
+    Array<ExtendedRectangle> sectionResources;
+    OrderedMap<ExtendedRectangle, Section> sections;
     String name;
     int diCount;
 
     protected Map() {
-//        di = new DrawingInstruction[17];
-//        for (int i = 1; i < 17; i++) {
-//            di[i] = new DrawingInstruction();
-//            di[i].command = DrawCommand.Image;
-//            di[i].resource = "data/img/maps/grass.png";
-//            di[i].pos.x = (i-1) * 3.5f;
-//            di[i].pos.y = -1.5f;
-//            di[i].bounds.x = 0;
-//            di[i].bounds.width = 4;
-//            di[i].bounds.y = 20;
-//            di[i].bounds.height = 2;
-//        }
-//        di[0] = new DrawingInstruction();
-//        di[0].command = DrawCommand.Image;
-//        di[0].resource = "data/img/maps/bg.png";
-//        di[0].pos.x = 0;
-//        di[0].pos.y = 0;
-//        di[0].bounds.x = 10;
-//        di[0].bounds.y = 0;
-//        di[0].relative = true;
+        sections = new OrderedMap<>();
     }
 
+    @Override
     public void update(float delta) {
     }
 
-    public DrawingInstruction[] getDrawingInstructions() {
-        return di;
+    @Override
+    public Array<DrawingInstruction> getDrawingInstructions() {
+        Array<DrawingInstruction> diList = new Array<>();
+        for (ExtendedRectangle r : sections.keys()) {
+            Array<DrawingInstruction> temp = sections.get(r).getDrawingInstructions();
+            diList.addAll(temp);
+        }
+        return diList;
     }
 
     @Override
     public int getDrawingInstructionsCount() {
-        return diCount;
+        Array<DrawingInstruction> diList = new Array<>();
+        for (ExtendedRectangle r : sections.keys()) {
+            Array<DrawingInstruction> temp = sections.get(r).getDrawingInstructions();
+            diList.addAll(temp);
+        }
+        return diList.size;
     }
 
     public String getName() {
@@ -62,15 +58,36 @@ public class Map implements IUpdatable, IDrawable {
         this.name = name;
     }
 
-    public static Map readMap(String loc){
+    public static Map readMap(String loc) {
         FileHandle handle = Gdx.files.internal(loc);
         Json json = new Json();
-        return json.fromJson(Map.class, handle);
+        Map out = json.fromJson(Map.class, handle);
+        for (ExtendedRectangle r : out.sectionResources) {
+            out.sections.put(r, Section.readSection(r.resource));
+        }
+        return out;
     }
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         Json json = new Json();
-        String s = json.prettyPrint(new Map());
+        Map m = new Map();
+        m.sectionResources = new Array<>();
+        m.sectionResources.add(new ExtendedRectangle(0, 10, 10, 0, "map/1/sect/1"));
+        m.sectionResources.add(new ExtendedRectangle(10, 10, 20, 0, "map/1/sect/2"));
+        System.out.println(json.prettyPrint(new Rectangle(0, 10, 10, 10)));
+        String s = json.toJson(m);
         System.out.println(s);
-        Map m = json.fromJson(Map.class, s);
     }
+    
 }
+
+    class ExtendedRectangle extends Rectangle{
+        String resource;
+        public ExtendedRectangle(){
+            resource = "";
+        }
+        public ExtendedRectangle(float x, float y, float w, float h, String r){
+            super(x,y,w,h);
+            resource = r;
+        }
+    }

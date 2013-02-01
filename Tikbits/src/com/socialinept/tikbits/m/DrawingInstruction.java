@@ -5,7 +5,6 @@
 package com.socialinept.tikbits.m;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import java.util.Comparator;
 
 /**
@@ -14,7 +13,8 @@ import java.util.Comparator;
  */
 public class DrawingInstruction {
 
-    public boolean repeatY = false, repeatX = false, relative = false;
+    public boolean repeat_top = false, repeat_right = false, 
+            repeat_bottom = false, repeat_left = false, relative = false;
     public Rectangle bounds = new Rectangle();
     public String resource = "";
     public DrawCommand command = DrawCommand.Line;

@@ -8,13 +8,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+
 
 /**
  *
  * @author Andrew McCall <andrewnmccall@gmail.com>
  */
-public class PhysicalObject implements IUpdatable, IDrawable {
+public class PhysicalObject implements IUpdatable, IDrawable, ICollidable {
 
     static int IDLE = 0;
     static int RUN = 1;
@@ -30,16 +32,17 @@ public class PhysicalObject implements IUpdatable, IDrawable {
     static float MAX_VEL = 6f;
     static float DAMP = 0.90f;
     public Vector2 pos = new Vector2();
+    public Rectangle bounds = new Rectangle();
     public Vector2 accel = new Vector2();
     public Vector2 vel = new Vector2();
-    public Rectangle bounds = new Rectangle();
+    public String type = "";
     public String name = "";
     public int id = 0;
     int state = SPAWN;
     float stateTime = 0;
     int dir = LEFT;
     int diCount = 0;
-    DrawingInstruction[] di;
+    Array<DrawingInstruction> di;
     boolean grounded = false;
     
     public PhysicalObject(){
@@ -70,20 +73,7 @@ public class PhysicalObject implements IUpdatable, IDrawable {
         vel.mul(deltaTime);
         tryMove();
         vel.mul(1.0f / deltaTime);
-
-        if (state == SPAWN) {
-            if (stateTime > 0.4f) {
-                state = IDLE;
-            }
-        }
-
-        if (state == DYING) {
-            if (stateTime > 0.4f) {
-                state = DEAD;
-            }
-        }
-
-        stateTime += deltaTime;
+        accel.mul(1.0f / deltaTime);
     }
 
     @Override
@@ -92,7 +82,7 @@ public class PhysicalObject implements IUpdatable, IDrawable {
     }
 
     @Override
-    public DrawingInstruction[] getDrawingInstructions() {
+    public Array<DrawingInstruction> getDrawingInstructions() {
         return di;
     }
 
@@ -115,22 +105,61 @@ public class PhysicalObject implements IUpdatable, IDrawable {
         updatePhysicalObjectDrawingInstructions();
     }
     public void updatePhysicalObjectDrawingInstructions(){
-        for(int i = 0; i < di.length; i++) {
-            if(di[i] != null && di[i] instanceof PhysicalObjectDrawingInstruction) {
-                ((PhysicalObjectDrawingInstruction)di[i]).setPhysicalObject(this);
+        for(int i = 0; i < di.size; i++) {
+            if(di.get(i) != null && di.get(i) instanceof PhysicalObjectDrawingInstruction) {
+                ((PhysicalObjectDrawingInstruction)di.get(i)).setPhysicalObject(this);
             }
         }
     }
     public static void main(String[] args){
         PhysicalObject po = new PhysicalObject();
-        po.di = new DrawingInstruction[1];
+        po.di = new Array<>();
         Json json = new Json();
         //po.di[0] = new PhysicalObjectDrawingInstruction(po);
         String s = json.prettyPrint(po);
         System.out.println(s);        
     }
-}
 
+    @Override
+    public void isColliding(ICollidable c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void willCollide(ICollidable c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Vector2 getVelocity() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Vector2 getAcceleration() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Rectangle getCollidableRectangle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CollidableType getCollidableType() {
+        return CollidableType.RECTANGLE;
+    }
+
+    @Override
+    public Rectangle getCollidableLine() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Rectangle getCollidableSphere() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
 class PhysicalObjectDrawingInstruction extends DrawingInstruction {
 
     PhysicalObject po;

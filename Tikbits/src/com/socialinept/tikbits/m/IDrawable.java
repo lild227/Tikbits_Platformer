@@ -4,13 +4,13 @@
  */
 package com.socialinept.tikbits.m;
 
-import java.util.ArrayList;
+import com.badlogic.gdx.utils.Array;
 
 /**
  *
  * @author Andrew McCall <andrewnmccall@gmail.com>
  */
 public interface IDrawable {
-    public DrawingInstruction[] getDrawingInstructions();
+    public Array<DrawingInstruction> getDrawingInstructions();
     public int getDrawingInstructionsCount();
  }

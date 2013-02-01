@@ -8,20 +8,19 @@ package com.socialinept.tikbits.screen;
  *
  * @author Andrew McCall <andrewnmccall@gmail.com>
  */
-import com.socialinept.tikbits.m.GameProcessor;
-import com.socialinept.tikbits.m.Map;
-import com.socialinept.tikbits.m.DrawingInstruction;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.socialinept.tikbits.m.DrawingInstruction;
+import com.socialinept.tikbits.m.GameProcessor;
+import com.socialinept.tikbits.m.Map;
 
 public class GameScreenRenderer {
 
@@ -57,6 +56,7 @@ public class GameScreenRenderer {
     TexturePool texturePool;
     FPSLogger fps = new FPSLogger();
     int blockX = 16, blockY = 9;
+
     public GameScreenRenderer(Map map) {
         gp = GameProcessor.getGameProcessor();
         this.map = map;
@@ -152,27 +152,33 @@ public class GameScreenRenderer {
         stateTime += deltaTime;
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
-        DrawingInstruction[] di = gp.getDrawingInstructions();
-        for (int i = 0; i < di.length; i++) {
-            di[i].update();
-            switch (di[i].command) {
+        Array<DrawingInstruction> di = gp.getDrawingInstructions();
+        for (int i = 0; i < di.size; i++) {
+            di.get(i).update();
+            switch (di.get(i).command) {
                 case Line:
-                    renderer.color(di[i].fcolor_R, di[i].fcolor_G, di[i].fcolor_B, di[i].fcolor_A);
-                    renderer.vertex(di[i].bounds.x,
-                            di[i].bounds.y, 0);
-                    renderer.color(di[i].fcolor_R, di[i].fcolor_G, di[i].fcolor_B, di[i].fcolor_A);
-                    renderer.vertex(di[i].bounds.x + di[i].bounds.x, di[i].bounds.y + di[i].bounds.y, 0);
+                    renderer.color(di.get(i).fcolor_R, di.get(i).fcolor_G, di.get(i).fcolor_B, di.get(i).fcolor_A);
+                    renderer.vertex(di.get(i).bounds.x,
+                            di.get(i).bounds.y, 0);
+                    renderer.color(di.get(i).fcolor_R, di.get(i).fcolor_G, di.get(i).fcolor_B, di.get(i).fcolor_A);
+                    renderer.vertex(di.get(i).bounds.x + di.get(i).bounds.x, di.get(i).bounds.y + di.get(i).bounds.y, 0);
                     break;
                 case Image:
-                    if (di[i].relative)
-                        batch.draw(texturePool.getTexture(di[i].resource), cam.position.x-(cam.viewportWidth/2)-di[i].bounds.x, di[i].bounds.y, 20, 12);
-                    else
-                        if(di[i].repeatX){
-                            float count = 1 + blockX/di[i].bounds.width;
-                            for(int j = 0; j < count; j++)
-                                batch.draw(texturePool.getTexture(di[i].resource), di[i].bounds.width*j, di[i].bounds.y, di[i].bounds.width, di[i].bounds.height);
-                        }else
-                            batch.draw(texturePool.getTexture(di[i].resource), di[i].bounds.x, di[i].bounds.y, di[i].bounds.width, di[i].bounds.height);
+                    if (di.get(i).relative) {
+                        batch.draw(texturePool.getTexture(di.get(i).resource), 
+                                cam.position.x - (cam.viewportWidth / 2) - di.get(i).bounds.x, 
+                                di.get(i).bounds.y, 20, 12);
+                    } else if (di.get(i).repeat_right) {
+                        float count = 1 + blockX / di.get(i).bounds.width;
+                        float startX = ((int)((cam.position.x - (cam.viewportWidth / 2)) / di.get(i).bounds.width)) * di.get(i).bounds.width + di.get(i).bounds.x;
+                        for (int j = 0; j < count; j++) {
+                            batch.draw(texturePool.getTexture(di.get(i).resource), 
+                                    startX + di.get(i).bounds.width * j, di.get(i).bounds.y, 
+                                    di.get(i).bounds.width, di.get(i).bounds.height);
+                        }
+                    } else {
+                        batch.draw(texturePool.getTexture(di.get(i).resource), di.get(i).bounds.x, di.get(i).bounds.y, di.get(i).bounds.width, di.get(i).bounds.height);
+                    }
             }
         }
         batch.end();

@@ -8,5 +8,6 @@ package com.socialinept.tikbits.m;
  *
  * @author Andrew McCall <andrewnmccall@gmail.com>
  */
-public class ScriptCommand {
+public enum ScriptCommand {
+    AddPhysicalObject, UpdatePhysicalObject, SetPlayerPhysicalObject;
 }
