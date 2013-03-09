@@ -18,6 +18,7 @@ public final class GameProcessor {
     public Array<IUpdatable> updatables = null;
     public Array<IDrawable> drawables = null;
     public Array<ICollidable> collidables = null;
+    CollidableEngine collidableEngine = null;
     public Player player = null;
     public Map map = null;
     public Script script = null;
@@ -25,12 +26,14 @@ public final class GameProcessor {
     private GameProcessor() {
         player = new Player();
         script = Script.readScript("scripts/main/1");
-        physicalObjects = new Array<>();
-        updatables = new Array<>();
-        drawables = new Array<>();
-        collidables = new Array<>();
+        physicalObjects = new Array<PhysicalObject>();
+        updatables = new Array<IUpdatable>();
+        drawables = new Array<IDrawable>();
+        collidables = new Array<ICollidable>();
         map = Map.readMap("maps/1/json");
+        map.setGameProcessor(this);
         drawables.add(map);
+        collidableEngine = new CollidableEngine();
         runScript();
     }
 
@@ -55,13 +58,19 @@ public final class GameProcessor {
     }
 
     public void update(float delta) {
+        for (IUpdatable u : updatables) {
+            u.preupdate(delta);
+        }
         for (int i = 0; i < collidables.size; i++) {
-            for(int j = i+1; j < collidables.size; i++){
-                collidables.get(i).isColliding(collidables.get(j));
+            for(int j = i+1; j < collidables.size; j++){
+                collidableEngine.processCollidables(collidables.get(i),collidables.get(j));
             }
         }
         for (IUpdatable u : updatables) {
             u.update(delta);
+        }
+        for (IUpdatable u : updatables) {
+            u.postupdate(delta);
         }
     }
 
@@ -86,7 +95,7 @@ public final class GameProcessor {
         for (IDrawable d : drawables) {
             count += d.getDrawingInstructionsCount();
         }
-        out = new Array<>();
+        out = new Array<DrawingInstruction>();
         count = 0;
         for (IDrawable d : drawables) {
             Array<DrawingInstruction> temp = d.getDrawingInstructions();

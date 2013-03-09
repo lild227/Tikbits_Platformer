@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Collidable implements ICollidable{
     Rectangle bounds;
     Vector2 vel, acc;
+    Vector2[] line;
+    CollidableType collidableType;
     public Collidable(){
         bounds = new Rectangle();
         vel = new Vector2();
@@ -44,16 +46,61 @@ public class Collidable implements ICollidable{
 
     @Override
     public CollidableType getCollidableType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return collidableType;
     }
 
     @Override
-    public Rectangle getCollidableLine() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Vector2[] getCollidableLine() {
+        return line;
     }
 
     @Override
     public Rectangle getCollidableSphere() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getPriority() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEnvironmentBoundLeft(float f) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEnvironmentBoundRight(float f) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEnvironmentBoundTop(float f) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setEnvironmentBoundBottom(float f) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getEnvironmentBoundLeft() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getEnvironmentBoundRight() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getEnvironmentBoundTop() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getEnvironmentBoundBottom() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

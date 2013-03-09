@@ -6,8 +6,8 @@ package com.socialinept.tikbits.m;
 
 /**
  *
- * @author lild227
+ * @author Andrew N McCall
  */
-public class AnimationCondition {
+public class PhysicalObjectAction {
     
 }

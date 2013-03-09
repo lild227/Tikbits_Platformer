@@ -4,12 +4,12 @@
  */
 package com.socialinept.tikbits.screen;
 
-import com.socialinept.tikbits.m.GameProcessor;
-import com.socialinept.tikbits.m.Map;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
+import com.socialinept.tikbits.m.GameProcessor;
+import com.socialinept.tikbits.m.Map;
 
 /**
  *
@@ -40,12 +40,15 @@ public class GameScreen extends DefaultScreen {
             y0 = Gdx.input.getY(0);
             pointerDown = true;
         }
-        if(!Gdx.input.isTouched(0))
+        if(!Gdx.input.isTouched(0)) {
             pointerDown = false;
-        if(pointerDown && x0 > Gdx.input.getX(0))
+        }
+        if(pointerDown && x0 > Gdx.input.getX(0)) {
             gameProcessor.player.tryMove(-10, 0);
-        if(pointerDown && x0 < Gdx.input.getX(0))
+        }
+        if(pointerDown && x0 < Gdx.input.getX(0)) {
             gameProcessor.player.tryMove(10, 0);
+        }
 
         if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
             gameProcessor.player.tryMoveX(10);
@@ -69,6 +72,8 @@ public class GameScreen extends DefaultScreen {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         renderer.render(delta);
+        int n = Runtime.getRuntime().availableProcessors();
+        System.out.println(n+" "+java.lang.Thread.activeCount());
         //controlRenderer.render();
 
 //		if (map.bob.bounds.overlaps(map.endDoor.bounds)) {

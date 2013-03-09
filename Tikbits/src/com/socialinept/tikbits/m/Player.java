@@ -36,7 +36,7 @@ public class Player {
     }
 
     public boolean tryMoveY(float y) {
-        if ((physicalObject != null && physicalObject.pos.y == 0) || y < 0) {
+        if ((physicalObject != null && physicalObject.grounded) || y < 0) {
             physicalObject.vel.y = y;
         }
         return true;

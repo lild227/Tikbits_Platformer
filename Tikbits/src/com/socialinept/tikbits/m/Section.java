@@ -17,11 +17,15 @@ import com.badlogic.gdx.utils.Json;
 public class Section {
     
     Array<DrawingInstruction> di;
+    Array<Collidable> c;
     int diCount;
     Rectangle rect;
     
     public void setRectangle(Rectangle r){
         rect = r;
+    }
+    public Array<Collidable> getCollidables() {
+        return c;
     }
     public Array<DrawingInstruction> getDrawingInstructions() {
         return di;

@@ -26,6 +26,7 @@ public class ScriptInstruction {
                 gp.physicalObjects.add(physicalObject);
                 gp.updatables.add(physicalObject);
                 gp.drawables.add(physicalObject);
+                gp.collidables.add(physicalObject);
                 updatePhysicalObject(physicalObject);
                 break;
             case SetPlayerPhysicalObject:
